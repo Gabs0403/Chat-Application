@@ -26,14 +26,18 @@ namespace Chat_Engine_Project
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            User user = new User();
+            User user = new User {
 
-            user.username = txtUsername.Text;
-            user.password = txtPassword.Text;
+                username = txtUsername.Text,
+                password = txtPassword.Text
+
+            };
+
+            
 
             if(operations.checkLogin(user))
             {
-                // create new form
+                // create chat page
             }
             else
             {

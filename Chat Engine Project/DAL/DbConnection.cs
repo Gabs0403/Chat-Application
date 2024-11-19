@@ -1,13 +1,13 @@
 ﻿
 using System.Runtime.InteropServices.ObjectiveC;
 using System.Data;
-using System.Data.SqlClient;
+using Microsoft.Data.SqlClient;
 
 namespace DAL
 {
     public class DbConnection
     {
-        public SqlConnection con = new SqlConnection("Data Source=FGCU-D-8KKPC14\\SQLEXPRESS;Initial Catalog=db_lbs;Integrated Security=True");
+        public SqlConnection con = new SqlConnection("Server=GABRIEL-PC\\SQLEXPRESS;Database=chatEngine;Integrated Security=True");
 
         public SqlConnection getCon()
         {
