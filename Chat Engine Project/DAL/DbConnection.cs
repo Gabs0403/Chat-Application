@@ -5,9 +5,9 @@ using Microsoft.Data.SqlClient;
 
 namespace DAL
 {
-    public class DbConnection
+    public class Dbconnection
     {
-        public SqlConnection con = new SqlConnection("Server=GABRIEL-PC\\SQLEXPRESS;Database=chatEngine;Integrated Security=True");
+        public SqlConnection con = new SqlConnection("Data Source=GABRIEL-PC\\SQLEXPRESS;Initial Catalog=chatEngine;Integrated Security=True;TrustServerCertificate=True");
 
         public SqlConnection getCon()
         {

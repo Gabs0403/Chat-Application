@@ -39,6 +39,7 @@
             txtEmail = new TextBox();
             btnRegister = new Button();
             btnCancel = new Button();
+            lblShowPassword = new Label();
             SuspendLayout();
             // 
             // lblTitle
@@ -104,6 +105,7 @@
             txtConfirmPassword.PasswordChar = '*';
             txtConfirmPassword.Size = new Size(180, 27);
             txtConfirmPassword.TabIndex = 6;
+            txtConfirmPassword.TextChanged += txtConfirmPassword_TextChanged;
             // 
             // lblEmail
             // 
@@ -127,7 +129,7 @@
             btnRegister.Location = new Point(305, 361);
             btnRegister.Margin = new Padding(3, 4, 3, 4);
             btnRegister.Name = "btnRegister";
-            btnRegister.Size = new Size(75, 38);
+            btnRegister.Size = new Size(75, 37);
             btnRegister.TabIndex = 9;
             btnRegister.Text = "Register";
             btnRegister.UseVisualStyleBackColor = true;
@@ -138,17 +140,29 @@
             btnCancel.Location = new Point(410, 361);
             btnCancel.Margin = new Padding(3, 4, 3, 4);
             btnCancel.Name = "btnCancel";
-            btnCancel.Size = new Size(75, 38);
+            btnCancel.Size = new Size(75, 37);
             btnCancel.TabIndex = 10;
             btnCancel.Text = "Cancel";
             btnCancel.UseVisualStyleBackColor = true;
             btnCancel.Click += btnCancel_Click;
             // 
+            // lblShowPassword
+            // 
+            lblShowPassword.AutoSize = true;
+            lblShowPassword.ForeColor = Color.Red;
+            lblShowPassword.Location = new Point(305, 286);
+            lblShowPassword.Name = "lblShowPassword";
+            lblShowPassword.Size = new Size(177, 20);
+            lblShowPassword.TabIndex = 11;
+            lblShowPassword.Text = "Password does not match";
+            lblShowPassword.Visible = false;
+            // 
             // RegisterPage
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(714, 498);
+            ClientSize = new Size(714, 499);
+            Controls.Add(lblShowPassword);
             Controls.Add(btnCancel);
             Controls.Add(btnRegister);
             Controls.Add(txtEmail);
@@ -183,5 +197,6 @@
         private System.Windows.Forms.TextBox txtEmail;
         private System.Windows.Forms.Button btnRegister;
         private System.Windows.Forms.Button btnCancel;
+        private Label lblShowPassword;
     }
 }

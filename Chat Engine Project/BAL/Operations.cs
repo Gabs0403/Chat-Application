@@ -3,71 +3,90 @@ using System.Data.Common;
 using System.Reflection.Metadata;
 using DAL;
 using Microsoft.Data.SqlClient;
+using System.Data;
 
 namespace BAL
 {
     public class Operations
     {
-        public DAL.DbConnection Connection = new DAL.DbConnection();
+        public Dbconnection Connection = new Dbconnection();
 
-        public bool checkLogin(User user)
+        public User checkLogin(User user)
         {
 
             string strQuery = string.Empty;
 
             strQuery = $"SELECT * from Users\n" +
-                $"WHERE username = {user.username} AND password = {user.password};";
+                $"WHERE username = '{user.username}' AND password = '{user.password}';";
 
+            var cmd = new SqlCommand();
+            cmd.CommandText = strQuery;
+            cmd.CommandType = CommandType.Text;
 
-            return false;
-        }
-
-
-        public bool addUser(User user)
-        {
-            string strQuery = "INSERT INTO Users (Username, Email, Password) VALUES ('ique', 'abc', '1234')";
-
-            var cmd = new SqlCommand(strQuery);
-            //cmd.Parameters.AddWithValue("@username", user.username);
-            //cmd.Parameters.AddWithValue("@email", user.email);
-            //cmd.Parameters.AddWithValue("@password", user.password);
+            User newUser = new User();
 
             try
             {
-                Connection.ExeNonQuery(cmd);
-                return true;
+                using (var reader = Connection.ExeReader(cmd))
+                {
+                    foreach (DataRow row in reader.Rows)
+                    {
+                        // Retrieve and parse the data
+                        newUser.userID = Convert.ToInt32(row["UserId"]); // Convert Id to integer
+                        newUser.username = row["UserName"].ToString(); // Convert to string
+                        newUser.password = row["Password"].ToString(); // Convert to string
+                        newUser.email = row["Email"].ToString(); // Convert to string
+
+                    }
+
+                }
             }
             catch (Exception ex)
             {
-                // Optionally log the exception (ex.Message) here for more details
-                return false;
+
             }
+
+
+            return newUser;
         }
 
-        //public bool addUser(User user)
-        //{
-        //    string strQuery = string.Empty ;
 
-        //    strQuery = $"INSERT INTO Users (Username,Email,Password)" +
-        //        $"VALUES (" +
-        //        $"'{user.username}'," +
-        //        $"'{user.email}'," +
-        //        $"'{user.password}')";
+        public int addUser(User user)
+        {
+            string strQuery = string.Empty;
 
-        //    var cmd = new SqlCommand();
-        //    cmd.CommandText = strQuery;
-        //    try
-        //    {
+            strQuery = $"INSERT INTO Users (Username,Email,Password)" +
+                $"VALUES (" +
+                $"'{user.username}'," +
+                $"'{user.email}'," +
+                $"'{user.password}')";
 
-        //        Connection.ExeNonQuery(cmd);
-        //        return true;
-        //    }
-        //    catch (Exception ex) {
+            var cmd = new SqlCommand();
+            cmd.CommandText = strQuery;
+            cmd.CommandType = CommandType.Text;
+            try
+            {
 
-        //        return false;
-        //    }
+                int result = Connection.ExeNonQuery(cmd);
+                return result;
+            }
+            catch (Exception ex)
+            {
 
-        //}
+                return -1;
+            }
+
+        }
+        public bool isValidPassword(string password, string confirmPassword)
+        {
+            return password.Length >= 8 &&
+                   password.Any(char.IsUpper) &&
+                   password.Count(char.IsLetter) >= 2 &&
+                   password.Any(char.IsDigit) &&
+                   password == confirmPassword;
+        }
+
+        
 
     }
 }

@@ -33,12 +33,12 @@ namespace Chat_Engine_Project
 
             };
 
-            
+            var loggedUser = operations.checkLogin(user);
 
-            if(operations.checkLogin(user))
+            if (loggedUser.userID != 0)
             {
-                // create chat page
-            }
+                ConversationScreen conversationScreen = new ConversationScreen(loggedUser);
+                conversationScreen.Show();            }
             else
             {
                 MessageBox.Show("Username and/or password invalid!");
