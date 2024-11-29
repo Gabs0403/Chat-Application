@@ -35,7 +35,7 @@ namespace Chat_Engine_Project
 
             var loggedUser = operations.checkLogin(user);
 
-            if (loggedUser.userID != 0)
+            if (loggedUser != null)
             {
                 ConversationScreen conversationScreen = new ConversationScreen(loggedUser);
                 conversationScreen.Show();            }

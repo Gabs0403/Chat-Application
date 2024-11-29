@@ -23,33 +23,32 @@ namespace BAL
             cmd.CommandText = strQuery;
             cmd.CommandType = CommandType.Text;
 
-            User newUser = new User();
+            User loggedInUser = null;
 
             try
             {
                 using (var reader = Connection.ExeReader(cmd))
                 {
-                    foreach (DataRow row in reader.Rows)
+                    if (reader.Rows.Count > 0)
                     {
-                        // Retrieve and parse the data
-                        newUser.userID = Convert.ToInt32(row["UserId"]); // Convert Id to integer
-                        newUser.username = row["UserName"].ToString(); // Convert to string
-                        newUser.password = row["Password"].ToString(); // Convert to string
-                        newUser.email = row["Email"].ToString(); // Convert to string
-
+                        DataRow row = reader.Rows[0];
+                        loggedInUser = new User
+                        {
+                            userID = Convert.ToInt32(row["UserId"]),
+                            username = row["UserName"].ToString(),
+                            email = row["Email"].ToString()
+                        };
                     }
-
                 }
             }
             catch (Exception ex)
             {
-
+                // Log exception
+                Console.WriteLine(ex.Message);
             }
 
-
-            return newUser;
+            return loggedInUser;
         }
-
 
         public int addUser(User user)
         {
@@ -72,11 +71,12 @@ namespace BAL
             }
             catch (Exception ex)
             {
-
+                Console.WriteLine($"Error: {ex.Message}");
                 return -1;
             }
 
         }
+
         public bool isValidPassword(string password, string confirmPassword)
         {
             return password.Length >= 8 &&
@@ -86,7 +86,24 @@ namespace BAL
                    password == confirmPassword;
         }
 
-        
+        public bool userExists(string username)
+        {
+            var cmd = new SqlCommand("SELECT COUNT(*) FROM Users WHERE username = @username");
+            cmd.Parameters.AddWithValue("@username", username);
+            try
+            {
+                int count = Convert.ToInt32(Connection.ExeScalar(cmd));
+                return count > 0;
+            }
+            catch (Exception ex)
+            {
+                // Log the exception for debugging
+                Console.WriteLine($"Error: {ex.Message}");
+                return false;
+            }
+        }
 
     }
+
+    
 }

@@ -33,18 +33,26 @@ namespace Chat_Engine_Project
 
             User user = new User
             {
-                username = txtUsername.Text,
-                password = txtPassword.Text,
-                email = txtEmail.Text
+                username = txtUsername.Text.Trim(),
+                password = txtPassword.Text.Trim(),
+                email = txtEmail.Text.Trim()
             };
 
-            if ((Operations.isValidPassword(txtPassword.Text, txtConfirmPassword.Text)))
+            if (Operations.isValidPassword(user.password, txtConfirmPassword.Text.Trim()))
             {
-                int rows = Operations.addUser(user);
 
-                if (rows != -1)
+                if (!Operations.userExists(user.username))
                 {
-                    this.Close();
+                    int rows = Operations.addUser(user);
+                    if (rows > 0)
+                    {
+                        MessageBox.Show("Registration successful!");
+                        this.Close();
+                    }
+                    else
+                    {
+                        MessageBox.Show("Error during registration. Please try again.");
+                    }
                 }
                 else
                 {
