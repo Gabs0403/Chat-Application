@@ -28,62 +28,77 @@ namespace Chat_Engine_Project
 
         private void btnRegister_Click(object sender, EventArgs e)
         {
+            string username = txtUsername.Text.Trim();
+            string password = txtPassword.Text.Trim();
+            string confirmPassword = txtConfirmPassword.Text.Trim();
+            string email = txtEmail.Text.Trim();
 
-
+            // Check if passwords match
+            if (password != confirmPassword)
+            {
+                MessageBox.Show("Passwords do not match. Please try again.");
+                return;
+            }
 
             User user = new User
             {
-                username = txtUsername.Text.Trim(),
-                password = txtPassword.Text.Trim(),
-                email = txtEmail.Text.Trim()
+                username = username,
+                password = password,
+                email = email
             };
 
-            if (Operations.isValidPassword(user.password, txtConfirmPassword.Text.Trim()))
+            // Validate password
+            if (Operations.isValidPassword(password, confirmPassword))
             {
-
+                // Check if the username already exists
                 if (!Operations.userExists(user.username))
                 {
-                    int rows = Operations.addUser(user);
-                    if (rows > 0)
+                    try
                     {
-                        MessageBox.Show("Registration successful!");
-                        this.Close();
+                        // Try adding the user
+                        int rows = Operations.addUser(user);
+                        if (rows > 0)
+                        {
+                            MessageBox.Show("Registration successful!");
+                            this.Close(); // Close the form if registration is successful
+                        }
+                        else
+                        {
+                            MessageBox.Show("Error during registration. Please try again.");
+                        }
                     }
-                    else
+                    catch (Exception ex)
                     {
-                        MessageBox.Show("Error during registration. Please try again.");
+                        MessageBox.Show($"An error occurred while registering: {ex.Message}");
                     }
                 }
                 else
                 {
                     MessageBox.Show("Username already exists!");
                 }
-
             }
             else
             {
+                // Show password validation message
                 string message = $"The password must have:\n" +
-                    $"- At least 2 letters\n" +
-                    $"- At least one uppercase letter\n" +
-                    $"- At least one number\n" +
-                    $"- At least eight characters";
-
+                                 $"- At least 2 letters\n" +
+                                 $"- At least one uppercase letter\n" +
+                                 $"- At least one number\n" +
+                                 $"- At least eight characters";
                 MessageBox.Show(message);
             }
-
-
-
         }
 
         private void txtConfirmPassword_TextChanged(object sender, EventArgs e)
         {
+            // This event could be used for live validation of password match
             if (txtConfirmPassword.Text == txtPassword.Text)
             {
-                lblShowPassword.Visible = false;
+                lblShowPassword.Visible = false; // Hide the warning label if passwords match
             }
             else
             {
-                lblShowPassword.Visible = true;
+                lblShowPassword.Visible = true; // Show the warning label if passwords don't match
             }
         }
     }

@@ -13,6 +13,7 @@ namespace Chat_Engine_Project
             InitializeComponent();
         }
 
+
         private void linkLabel1_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             RegisterPage register = new RegisterPage();
@@ -26,24 +27,25 @@ namespace Chat_Engine_Project
 
         private void btnLogin_Click(object sender, EventArgs e)
         {
-            User user = new User {
-
+            User user = new User
+            {
                 username = txtUsername.Text,
                 password = txtPassword.Text
-
             };
 
-            var loggedUser = operations.checkLogin(user);
+            // Fetch logged-in user and all users in one operation
+            var (loggedUser, allUsers) = operations.CheckLoginAndFetchUsers(user);
 
             if (loggedUser != null)
             {
-                ConversationScreen conversationScreen = new ConversationScreen(loggedUser);
-                conversationScreen.Show();            }
+                // Pass the logged user and all users to ConversationScreen
+                ConversationScreen conversationScreen = new ConversationScreen(loggedUser, allUsers);
+                conversationScreen.Show();
+            }
             else
             {
                 MessageBox.Show("Username and/or password invalid!");
             }
-
         }
     }
 }
