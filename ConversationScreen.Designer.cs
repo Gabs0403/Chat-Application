@@ -1,4 +1,4 @@
-﻿namespace ChatEngine
+﻿namespace Chat_Engine_Project
 {
     partial class ConversationScreen
     {
@@ -28,24 +28,23 @@
         /// </summary>
         private void InitializeComponent()
         {
-            textBox1 = new TextBox();
+            txtBoxMessage = new TextBox();
             label1 = new Label();
-            button1 = new Button();
-            button2 = new Button();
-            button3 = new Button();
-            button4 = new Button();
-            button5 = new Button();
-            button6 = new Button();
-            button7 = new Button();
             fontDialog1 = new FontDialog();
+            FLPChat = new FlowLayoutPanel();
+            btnSend = new Button();
+            comboBoxUsers = new ComboBox();
+            btnChat = new Button();
+            FLPChatPanel = new FlowLayoutPanel();
+            lblChatWith = new Label();
             SuspendLayout();
             // 
-            // textBox1
+            // txtBoxMessage
             // 
-            textBox1.Location = new Point(12, 54);
-            textBox1.Name = "textBox1";
-            textBox1.Size = new Size(236, 23);
-            textBox1.TabIndex = 0;
+            txtBoxMessage.Location = new Point(325, 647);
+            txtBoxMessage.Name = "txtBoxMessage";
+            txtBoxMessage.Size = new Size(742, 23);
+            txtBoxMessage.TabIndex = 0;
             // 
             // label1
             // 
@@ -56,88 +55,74 @@
             label1.TabIndex = 1;
             label1.Text = "label1";
             // 
-            // button1
+            // FLPChat
             // 
-            button1.Location = new Point(12, 298);
-            button1.Name = "button1";
-            button1.Size = new Size(206, 38);
-            button1.TabIndex = 2;
-            button1.Text = "button1";
-            button1.UseVisualStyleBackColor = true;
+            FLPChat.AutoScroll = true;
+            FLPChat.Location = new Point(325, 61);
+            FLPChat.Name = "FLPChat";
+            FLPChat.Size = new Size(856, 580);
+            FLPChat.TabIndex = 9;
             // 
-            // button2
+            // btnSend
             // 
-            button2.Location = new Point(12, 355);
-            button2.Name = "button2";
-            button2.Size = new Size(206, 38);
-            button2.TabIndex = 3;
-            button2.Text = "button2";
-            button2.UseVisualStyleBackColor = true;
+            btnSend.Location = new Point(1083, 647);
+            btnSend.Name = "btnSend";
+            btnSend.Size = new Size(94, 23);
+            btnSend.TabIndex = 10;
+            btnSend.Text = "Send";
+            btnSend.UseVisualStyleBackColor = true;
             // 
-            // button3
+            // comboBoxUsers
             // 
-            button3.Location = new Point(12, 412);
-            button3.Name = "button3";
-            button3.Size = new Size(206, 38);
-            button3.TabIndex = 5;
-            button3.Text = "button3";
-            button3.UseVisualStyleBackColor = true;
+            comboBoxUsers.FormattingEnabled = true;
+            comboBoxUsers.Location = new Point(22, 71);
+            comboBoxUsers.Name = "comboBoxUsers";
+            comboBoxUsers.Size = new Size(187, 23);
+            comboBoxUsers.TabIndex = 11;
+            comboBoxUsers.Text = "Who do you want to chat with?";
             // 
-            // button4
+            // btnChat
             // 
-            button4.Location = new Point(12, 632);
-            button4.Name = "button4";
-            button4.Size = new Size(206, 38);
-            button4.TabIndex = 4;
-            button4.Text = "button4";
-            button4.UseVisualStyleBackColor = true;
-            button4.Click += button4_Click;
+            btnChat.Location = new Point(225, 71);
+            btnChat.Name = "btnChat";
+            btnChat.Size = new Size(75, 23);
+            btnChat.TabIndex = 12;
+            btnChat.Text = "Chat";
+            btnChat.UseVisualStyleBackColor = true;
+            btnChat.Click += btnChat_Click;
             // 
-            // button5
+            // FLPChatPanel
             // 
-            button5.Location = new Point(12, 526);
-            button5.Name = "button5";
-            button5.Size = new Size(206, 38);
-            button5.TabIndex = 8;
-            button5.Text = "button5";
-            button5.UseVisualStyleBackColor = true;
+            FLPChatPanel.FlowDirection = FlowDirection.TopDown;
+            FLPChatPanel.Location = new Point(22, 261);
+            FLPChatPanel.Name = "FLPChatPanel";
+            FLPChatPanel.Size = new Size(261, 409);
+            FLPChatPanel.TabIndex = 13;
+            FLPChatPanel.WrapContents = false;
             // 
-            // button6
+            // lblChatWith
             // 
-            button6.Location = new Point(12, 469);
-            button6.Name = "button6";
-            button6.Size = new Size(206, 38);
-            button6.TabIndex = 7;
-            button6.Text = "button6";
-            button6.UseVisualStyleBackColor = true;
-            // 
-            // button7
-            // 
-            button7.Location = new Point(12, 579);
-            button7.Name = "button7";
-            button7.Size = new Size(206, 38);
-            button7.TabIndex = 6;
-            button7.Text = "button7";
-            button7.UseVisualStyleBackColor = true;
-            // 
-            // fontDialog1
-            // 
-            
+            lblChatWith.AutoSize = true;
+            lblChatWith.Font = new Font("Segoe UI", 14.25F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblChatWith.Location = new Point(335, 33);
+            lblChatWith.Name = "lblChatWith";
+            lblChatWith.Size = new Size(20, 25);
+            lblChatWith.TabIndex = 14;
+            lblChatWith.Text = "-";
             // 
             // ConversationScreen
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1447, 832);
-            Controls.Add(button5);
-            Controls.Add(button6);
-            Controls.Add(button7);
-            Controls.Add(button3);
-            Controls.Add(button4);
-            Controls.Add(button2);
-            Controls.Add(button1);
+            ClientSize = new Size(1189, 791);
+            Controls.Add(lblChatWith);
+            Controls.Add(FLPChatPanel);
+            Controls.Add(btnChat);
+            Controls.Add(comboBoxUsers);
+            Controls.Add(btnSend);
+            Controls.Add(FLPChat);
             Controls.Add(label1);
-            Controls.Add(textBox1);
+            Controls.Add(txtBoxMessage);
             FormBorderStyle = FormBorderStyle.FixedSingle;
             Name = "ConversationScreen";
             StartPosition = FormStartPosition.CenterScreen;
@@ -148,15 +133,14 @@
 
         #endregion
 
-        private TextBox textBox1;
+        private TextBox txtBoxMessage;
         private Label label1;
-        private Button button1;
-        private Button button2;
-        private Button button3;
-        private Button button4;
-        private Button button5;
-        private Button button6;
-        private Button button7;
         private FontDialog fontDialog1;
+        private FlowLayoutPanel FLPChat;
+        private Button btnSend;
+        private ComboBox comboBoxUsers;
+        private Button btnChat;
+        private FlowLayoutPanel FLPChatPanel;
+        private Label lblChatWith;
     }
 }
