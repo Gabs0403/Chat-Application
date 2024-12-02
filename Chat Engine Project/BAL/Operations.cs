@@ -11,44 +11,7 @@ namespace BAL
     {
         public Dbconnection Connection = new Dbconnection();
 
-        //public User checkLogin(User user)
-        //{
 
-        //    string strQuery = string.Empty;
-
-        //    strQuery = $"SELECT * from Users\n" +
-        //        $"WHERE username = '{user.username}' AND password = '{user.password}';";
-
-        //    var cmd = new SqlCommand();
-        //    cmd.CommandText = strQuery;
-        //    cmd.CommandType = CommandType.Text;
-
-        //    User loggedInUser = null;
-
-        //    try
-        //    {
-        //        using (var reader = Connection.ExeReader(cmd))
-        //        {
-        //            if (reader.Rows.Count > 0)
-        //            {
-        //                DataRow row = reader.Rows[0];
-        //                loggedInUser = new User
-        //                {
-        //                    userID = Convert.ToInt32(row["UserId"]),
-        //                    username = row["UserName"].ToString(),
-        //                    email = row["Email"].ToString()
-        //                };
-        //            }
-        //        }
-        //    }
-        //    catch (Exception ex)
-        //    {
-        //        // Log exception
-        //        Console.WriteLine(ex.Message);
-        //    }
-
-        //    return loggedInUser;
-        //}
 
         public int addUser(User user)
         {
@@ -216,9 +179,6 @@ namespace BAL
             }
         }
 
-
-
-
         public List<Tuple<int, string>> LoadExistingChats(int userID)
         {
             var chats = new List<Tuple<int, string>>();
@@ -258,6 +218,101 @@ namespace BAL
 
             return chats;
         }
+
+        public List<Tuple<string, int>> GetMessagesForConversation(string conversationID)
+        {
+            // List to hold messages and their sender IDs
+            List<Tuple<string, int>> messages = new List<Tuple<string, int>>();
+
+            // SQL query to fetch all messages for a given conversation ID
+            string query = @"
+                  SELECT MessageContent, SenderID
+                  FROM Message
+                  WHERE ConversationID = @ConversationID
+                  ORDER BY SentAt ASC"; // Order by SentAt to maintain message order
+
+            try
+            {
+                // Create and configure the SQL command
+                using (var cmd = new SqlCommand(query))
+                {
+                    // Add the parameter for conversation ID
+                    cmd.Parameters.AddWithValue("@ConversationID", conversationID);
+
+                    // Execute the query and retrieve the data
+                    var dt = Connection.ExeReader(cmd); // Assumes ExeReader returns a DataTable
+
+                    // Loop through each row and add the MessageContent and SenderID to the messages list
+                    foreach (DataRow row in dt.Rows)
+                    {
+                        string messageContent = row["MessageContent"].ToString();
+                        int senderID = Convert.ToInt32(row["SenderID"]); // Convert to integer for SenderID
+                        messages.Add(new Tuple<string, int>(messageContent, senderID)); // Add each message and senderID
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                // Log any errors that occur
+                Console.WriteLine($"Error retrieving messages for conversation {conversationID}: {ex.Message}");
+            }
+
+            // Return the list of messages and sender IDs
+            return messages;
+        }
+
+
+
+        public void AddMessageToDatabase(string? conversationID, string userID, string message)
+        {
+            if (conversationID == null)
+            {
+                throw new ArgumentNullException(nameof(conversationID), "ConversationID cannot be null.");
+            }
+
+            if (string.IsNullOrWhiteSpace(message))
+            {
+                throw new ArgumentException("Message content cannot be empty.", nameof(message));
+            }
+
+            // Define the SQL queries
+            string updateConversationQuery = @"
+                UPDATE Conversation
+                SET LastMessageAt = @LastMessageAt
+                WHERE ConversationID = @ConversationID";
+
+            string insertMessageQuery = @"
+                INSERT INTO Message (ConversationID, SenderID, MessageContent, SentAt)
+                VALUES (@ConversationID, @SenderID, @MessageContent, @SentAt)";
+
+            try
+            {
+                // Create and execute the update command for the Conversation table
+                using (var updateCmd = new SqlCommand(updateConversationQuery))
+                {
+                    updateCmd.Parameters.AddWithValue("@LastMessageAt", DateTime.Now);
+                    updateCmd.Parameters.AddWithValue("@ConversationID", conversationID);
+
+                    Connection.ExeNonQuery(updateCmd); // Assumes ExeNonQuery executes non-query commands
+                }
+
+                // Create and execute the insert command for the Message table
+                using (var insertCmd = new SqlCommand(insertMessageQuery))
+                {
+                    insertCmd.Parameters.AddWithValue("@ConversationID", conversationID);
+                    insertCmd.Parameters.AddWithValue("@SenderID", userID);
+                    insertCmd.Parameters.AddWithValue("@MessageContent", message);
+                    insertCmd.Parameters.AddWithValue("@SentAt", DateTime.Now);
+
+                    Connection.ExeNonQuery(insertCmd); // Insert the message into the database
+                }
+            }
+            catch (Exception ex)
+            {
+                Console.WriteLine($"Error adding message to database: {ex.Message}");
+            }
+        }
+
 
     }
 

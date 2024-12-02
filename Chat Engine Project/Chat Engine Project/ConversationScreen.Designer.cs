@@ -58,9 +58,10 @@
             // FLPChat
             // 
             FLPChat.AutoScroll = true;
-            FLPChat.Location = new Point(325, 61);
+            FLPChat.FlowDirection = FlowDirection.TopDown;
+            FLPChat.Location = new Point(325, 71);
             FLPChat.Name = "FLPChat";
-            FLPChat.Size = new Size(856, 580);
+            FLPChat.Size = new Size(856, 570);
             FLPChat.TabIndex = 9;
             // 
             // btnSend
@@ -71,6 +72,7 @@
             btnSend.TabIndex = 10;
             btnSend.Text = "Send";
             btnSend.UseVisualStyleBackColor = true;
+            btnSend.Click += btnSend_Click;
             // 
             // comboBoxUsers
             // 

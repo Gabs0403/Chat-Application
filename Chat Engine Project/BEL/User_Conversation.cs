@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BEL
 {
-    internal class User_Conversation
+    public class User_Conversation
     {
 
         public int userID { get; set; }

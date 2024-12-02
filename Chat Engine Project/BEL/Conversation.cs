@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace BEL
 {
-    class Conversation
+    public class Conversation
     {
         public int conversationID { get; set; }
 
