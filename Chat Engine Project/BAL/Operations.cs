@@ -229,7 +229,7 @@ namespace BAL
                   SELECT MessageContent, SenderID
                   FROM Message
                   WHERE ConversationID = @ConversationID
-                  ORDER BY SentAt ASC"; // Order by SentAt to maintain message order
+                  ORDER BY MessageID ASC"; // Order by SentAt to maintain message order
 
             try
             {

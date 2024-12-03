@@ -37,6 +37,7 @@
             btnChat = new Button();
             FLPChatPanel = new FlowLayoutPanel();
             lblChatWith = new Label();
+            btnUpdate = new Button();
             SuspendLayout();
             // 
             // txtBoxMessage
@@ -112,11 +113,23 @@
             lblChatWith.TabIndex = 14;
             lblChatWith.Text = "-";
             // 
+            // btnUpdate
+            // 
+            btnUpdate.Location = new Point(1056, 35);
+            btnUpdate.Name = "btnUpdate";
+            btnUpdate.Size = new Size(121, 23);
+            btnUpdate.TabIndex = 15;
+            btnUpdate.Text = "Update Chat";
+            btnUpdate.UseVisualStyleBackColor = true;
+            btnUpdate.Visible = false;
+            btnUpdate.Click += btnUpdate_Click;
+            // 
             // ConversationScreen
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1189, 721);
+            Controls.Add(btnUpdate);
             Controls.Add(lblChatWith);
             Controls.Add(FLPChatPanel);
             Controls.Add(btnChat);
@@ -144,5 +157,6 @@
         private Button btnChat;
         private FlowLayoutPanel FLPChatPanel;
         private Label lblChatWith;
+        private Button btnUpdate;
     }
 }
