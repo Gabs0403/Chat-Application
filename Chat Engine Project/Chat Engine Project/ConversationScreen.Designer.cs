@@ -116,7 +116,7 @@
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
-            ClientSize = new Size(1189, 791);
+            ClientSize = new Size(1189, 721);
             Controls.Add(lblChatWith);
             Controls.Add(FLPChatPanel);
             Controls.Add(btnChat);
