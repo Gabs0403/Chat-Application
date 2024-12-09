@@ -1,4 +1,4 @@
-﻿namespace Chat_Engine_Project
+﻿﻿namespace Chat_Engine_Project
 {
     partial class ConversationScreen
     {
@@ -28,6 +28,7 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(ConversationScreen));
             txtBoxMessage = new TextBox();
             label1 = new Label();
             fontDialog1 = new FontDialog();
@@ -38,6 +39,8 @@
             FLPChatPanel = new FlowLayoutPanel();
             lblChatWith = new Label();
             btnUpdate = new Button();
+            label2 = new Label();
+            btn_UpdateChats = new Button();
             SuspendLayout();
             // 
             // txtBoxMessage
@@ -50,20 +53,23 @@
             // label1
             // 
             label1.AutoSize = true;
+            label1.Font = new Font("Segoe UI Semibold", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label1.Location = new Point(105, 24);
             label1.Name = "label1";
-            label1.Size = new Size(38, 15);
+            label1.Size = new Size(48, 20);
             label1.TabIndex = 1;
             label1.Text = "label1";
             // 
             // FLPChat
             // 
+            FLPChat.Anchor = AnchorStyles.Bottom;
             FLPChat.AutoScroll = true;
             FLPChat.FlowDirection = FlowDirection.TopDown;
             FLPChat.Location = new Point(325, 71);
             FLPChat.Name = "FLPChat";
             FLPChat.Size = new Size(856, 570);
             FLPChat.TabIndex = 9;
+            FLPChat.WrapContents = false;
             // 
             // btnSend
             // 
@@ -97,9 +103,9 @@
             // FLPChatPanel
             // 
             FLPChatPanel.FlowDirection = FlowDirection.TopDown;
-            FLPChatPanel.Location = new Point(22, 261);
+            FLPChatPanel.Location = new Point(22, 241);
             FLPChatPanel.Name = "FLPChatPanel";
-            FLPChatPanel.Size = new Size(261, 409);
+            FLPChatPanel.Size = new Size(261, 429);
             FLPChatPanel.TabIndex = 13;
             FLPChatPanel.WrapContents = false;
             // 
@@ -124,11 +130,35 @@
             btnUpdate.Visible = false;
             btnUpdate.Click += btnUpdate_Click;
             // 
+            // label2
+            // 
+            label2.AutoSize = true;
+            label2.Font = new Font("Segoe UI", 11.25F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            label2.Location = new Point(22, 218);
+            label2.Name = "label2";
+            label2.Size = new Size(56, 20);
+            label2.TabIndex = 0;
+            label2.Text = "CHATS";
+            // 
+            // btn_UpdateChats
+            // 
+            btn_UpdateChats.BackColor = Color.Transparent;
+            btn_UpdateChats.Image = (Image)resources.GetObject("btn_UpdateChats.Image");
+            btn_UpdateChats.Location = new Point(256, 211);
+            btn_UpdateChats.Name = "btn_UpdateChats";
+            btn_UpdateChats.Size = new Size(27, 27);
+            btn_UpdateChats.TabIndex = 16;
+            btn_UpdateChats.TextImageRelation = TextImageRelation.ImageAboveText;
+            btn_UpdateChats.UseVisualStyleBackColor = false;
+            btn_UpdateChats.Click += btn_UpdateChats_Click;
+            // 
             // ConversationScreen
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(1189, 721);
+            Controls.Add(btn_UpdateChats);
+            Controls.Add(label2);
             Controls.Add(btnUpdate);
             Controls.Add(lblChatWith);
             Controls.Add(FLPChatPanel);
@@ -158,5 +188,7 @@
         private FlowLayoutPanel FLPChatPanel;
         private Label lblChatWith;
         private Button btnUpdate;
+        private Label label2;
+        private Button btn_UpdateChats;
     }
 }

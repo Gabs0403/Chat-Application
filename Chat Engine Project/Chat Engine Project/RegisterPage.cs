@@ -60,7 +60,7 @@ namespace Chat_Engine_Project
                         if (rows > 0)
                         {
                             MessageBox.Show("Registration successful!");
-                            this.Close(); // Close the form if registration is successful
+                            this.Close(); 
                         }
                         else
                         {
@@ -79,7 +79,6 @@ namespace Chat_Engine_Project
             }
             else
             {
-                // Show password validation message
                 string message = $"The password must have:\n" +
                                  $"- At least 2 letters\n" +
                                  $"- At least one uppercase letter\n" +
@@ -91,7 +90,6 @@ namespace Chat_Engine_Project
 
         private void txtConfirmPassword_TextChanged(object sender, EventArgs e)
         {
-            // This event could be used for live validation of password match
             if (txtConfirmPassword.Text == txtPassword.Text)
             {
                 lblShowPassword.Visible = false; // Hide the warning label if passwords match

@@ -25,14 +25,14 @@ namespace Chat_Engine_Project
             this.loggedInUser = loggedUser;
             this.allUsers = allUsers;
 
-            // Set welcome label
+            
             label1.Text = $"Welcome, {loggedInUser.username}!";
 
             // Populate the combo box with all users
             comboBoxUsers.Items.Clear();
             foreach (var user in allUsers)
             {
-                if (user.userID != loggedInUser.userID) // Exclude the logged-in user
+                if (user.userID != loggedInUser.userID)
                 {
                     comboBoxUsers.Items.Add(user.username);
                 }
@@ -44,6 +44,8 @@ namespace Chat_Engine_Project
 
         private void LoadExistingChats()
         {
+            FLPChatPanel.Controls.Clear();
+
             var chats = operations.LoadExistingChats(loggedInUser.userID);
             foreach (var (conversationID, username) in chats)
             {
@@ -65,7 +67,6 @@ namespace Chat_Engine_Project
                     // Check if the chat button already exists
                     if (FLPChatPanel.Controls.Find($"btn_{selectedUsername}", false).Length == 0)
                     {
-                        // Perform database operation asynchronously
                         int conversationID = await Task.Run(() =>
                             operations.AddConversationToDatabase(loggedInUser.userID, selectedUsername));
 
@@ -108,12 +109,11 @@ namespace Chat_Engine_Project
                 Tag = conversationID,
                 Width = 200,
                 Height = 30,
-                BackColor = Color.White // Default color
+                BackColor = Color.White
             };
 
             userButton.Click += (s, ev) =>
             {
-                // Switch chat and set this button as active
                 SwitchChat(username, conversationID);
 
                 // Update the BackColor for the active button
@@ -125,22 +125,18 @@ namespace Chat_Engine_Project
 
         private async void SwitchChat(string username, string conversationID)
         {
-            // Disable chat-related UI controls during the switch
             btnChat.Enabled = false;
             comboBoxUsers.Enabled = false;
 
             try
             {
-                // Clear current chat display
                 FLPChat.Controls.Clear();
 
-                // Update label for current chat
                 lblChatWith.Text = $"Chatting with: {username}";
 
                 // Load messages for the selected conversation asynchronously
                 var messages = await Task.Run(() => operations.GetMessagesForConversation(conversationID));
 
-                // Ensure chat history is tracked for this conversation
                 if (!chatHistory.ContainsKey(conversationID))
                 {
                     chatHistory[conversationID] = new List<string>();
@@ -148,7 +144,6 @@ namespace Chat_Engine_Project
 
 
 
-                // Display each message and add to chat history
                 foreach (var (message, senderID) in messages)
                 {
                     Label messageLabel = new Label
@@ -160,8 +155,11 @@ namespace Chat_Engine_Project
                     };
 
 
-                    // Add the messagePanel to the FLPChat panel
                     FLPChat.Controls.Add(messageLabel);
+                }
+                if (FLPChat.Controls.Count > 0)
+                {
+                    FLPChat.ScrollControlIntoView(FLPChat.Controls[FLPChat.Controls.Count - 1]);
                 }
             }
             catch (Exception ex)
@@ -180,10 +178,8 @@ namespace Chat_Engine_Project
 
 
 
-
         private void SetActiveButton(Button activeButton)
         {
-            // Reset the BackColor of all buttons in FLPChatPanel
             foreach (var control in FLPChatPanel.Controls.OfType<Button>())
             {
                 control.BackColor = Color.White; // Default color
@@ -197,10 +193,9 @@ namespace Chat_Engine_Project
 
         private async void btnSend_Click(object sender, EventArgs e)
         {
-            // Find the currently active chat button
             var selectedButton = FLPChatPanel.Controls
                 .OfType<Button>()
-                .FirstOrDefault(btn => btn.BackColor == Color.LightBlue); // Assuming LightBlue indicates active chat
+                .FirstOrDefault(btn => btn.BackColor == Color.LightBlue);
 
             if (selectedButton != null)
             {
@@ -209,17 +204,14 @@ namespace Chat_Engine_Project
 
                 if (!string.IsNullOrEmpty(message))
                 {
-                    // Temporarily disable the send button to prevent duplicate clicks
                     btnSend.Enabled = false;
 
                     try
                     {
-                        // Add the message to the database asynchronously
                         await Task.Run(() =>
                             operations.AddMessageToDatabase(conversationID, loggedInUser.userID.ToString(), message));
 
                         // Add the message to the UI
-                        //chatHistory[conversationID].Add($"You: {message}");
                         Label messageLabel = new Label
                         {
                             Text = $"You: {message}",
@@ -227,6 +219,9 @@ namespace Chat_Engine_Project
                             Padding = new Padding(0, 10, 0, 10)
                         };
                         FLPChat.Controls.Add(messageLabel);
+
+                        // Scroll to the newly added message
+                        FLPChat.ScrollControlIntoView(messageLabel);
 
                         // Clear the message box
                         txtBoxMessage.Clear();
@@ -237,7 +232,6 @@ namespace Chat_Engine_Project
                     }
                     finally
                     {
-                        // Re-enable the send button
                         btnSend.Enabled = true;
                         txtBoxMessage.Focus();
                     }
@@ -253,6 +247,7 @@ namespace Chat_Engine_Project
             }
         }
 
+
         private async void btnUpdate_Click(object sender, EventArgs e)
         {
             var selectedButton = FLPChatPanel.Controls
@@ -264,13 +259,11 @@ namespace Chat_Engine_Project
             {
                 string conversationID = selectedButton.Tag.ToString();
 
-                // Clear current chat display
                 FLPChat.Controls.Clear();
 
                 // Load messages for the selected conversation asynchronously
                 var messages = await Task.Run(() => operations.GetMessagesForConversation(conversationID));
 
-                // Ensure chat history is tracked for this conversation
                 if (!chatHistory.ContainsKey(conversationID))
                 {
                     chatHistory[conversationID] = new List<string>();
@@ -290,8 +283,11 @@ namespace Chat_Engine_Project
                     };
 
 
-                    // Add the messagePanel to the FLPChat panel
                     FLPChat.Controls.Add(messageLabel);
+                }
+                if (FLPChat.Controls.Count > 0)
+                {
+                    FLPChat.ScrollControlIntoView(FLPChat.Controls[FLPChat.Controls.Count - 1]);
                 }
             }
             catch (Exception ex)
@@ -304,6 +300,12 @@ namespace Chat_Engine_Project
                 btnChat.Enabled = true;
                 comboBoxUsers.Enabled = true;
             }
+        }
+
+        private void btn_UpdateChats_Click(object sender, EventArgs e)
+        {
+
+            LoadExistingChats();
         }
     }
 }

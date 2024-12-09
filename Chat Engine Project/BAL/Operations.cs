@@ -60,7 +60,6 @@ namespace BAL
             }
             catch (Exception ex)
             {
-                // Log the exception for debugging
                 Console.WriteLine($"Error: {ex.Message}");
                 return false;
             }
@@ -68,10 +67,10 @@ namespace BAL
 
         public (User, List<User>) CheckLoginAndFetchUsers(User user)
         {
-            User loggedInUser = null;
+            User loggedInUser = new User();
             List<User> allUsers = new List<User>();
 
-            // First Query: Check Login
+            // Check Login
             string loginQuery = "SELECT * FROM Users WHERE UserName = @username AND Password = @password;";
             var loginCmd = new SqlCommand(loginQuery);
             loginCmd.Parameters.AddWithValue("@username", user.username);
@@ -97,7 +96,7 @@ namespace BAL
                 Console.WriteLine($"Error during login check: {ex.Message}");
             }
 
-            // Second Query: Fetch All Users
+            // Fetch All Users
             string fetchUsersQuery = "SELECT * FROM Users;";
             var fetchUsersCmd = new SqlCommand(fetchUsersQuery);
 
@@ -127,18 +126,18 @@ namespace BAL
 
         public int AddConversationToDatabase(int userID, string selectedUsername)
         {
-            // Step 1: Create a new conversation and get the ConversationID
+            // Create a new conversation and get the ConversationID
             string conversationQuery = "INSERT INTO Conversation (LastMessageAt) VALUES (@lastMessageAt); SELECT SCOPE_IDENTITY();";
             using (var cmd = new SqlCommand(conversationQuery))
             {
-                cmd.Parameters.AddWithValue("@lastMessageAt", DateTime.Now);  // Automatically handles date format
+                cmd.Parameters.AddWithValue("@lastMessageAt", DateTime.Now); 
 
                 try
                 {
                     // Get the new ConversationID after inserting
                     var conversationID = Convert.ToInt32(Connection.ExeScalar(cmd));
 
-                    // Step 2: Get the UserID of the selected user
+                    // Get the UserID of the selected user
                     string getUserIDQuery = "SELECT UserID FROM Users WHERE UserName = @selectedUsername;";
                     using (var userCmd = new SqlCommand(getUserIDQuery))
                     {
@@ -146,35 +145,34 @@ namespace BAL
 
                         var selectedUserID = Convert.ToInt32(Connection.ExeScalar(userCmd));
 
-                        // Step 3: Insert into User-Conversation table for the logged-in user
+                        // Insert into User-Conversation table for the logged-in user
                         string userConversationQuery = "INSERT INTO [User_Conversation] (UserID, ConversationID, JoinedAt) VALUES (@userID, @conversationID, @joinedAt);";
                         using (var userConvCmd = new SqlCommand(userConversationQuery))
                         {
                             userConvCmd.Parameters.AddWithValue("@userID", userID);
                             userConvCmd.Parameters.AddWithValue("@conversationID", conversationID);
-                            userConvCmd.Parameters.AddWithValue("@joinedAt", DateTime.Now);  // Automatically handles date format
+                            userConvCmd.Parameters.AddWithValue("@joinedAt", DateTime.Now);
 
-                            Connection.ExeNonQuery(userConvCmd); // For logged-in user
+                            Connection.ExeNonQuery(userConvCmd);
                         }
 
-                        // Step 4: Insert into User-Conversation table for the selected user
+                        // Insert into User-Conversation table for the selected user
                         using (var userConvCmd = new SqlCommand(userConversationQuery))
                         {
                             userConvCmd.Parameters.AddWithValue("@userID", selectedUserID);
                             userConvCmd.Parameters.AddWithValue("@conversationID", conversationID);
-                            userConvCmd.Parameters.AddWithValue("@joinedAt", DateTime.Now);  // Automatically handles date format
+                            userConvCmd.Parameters.AddWithValue("@joinedAt", DateTime.Now);
 
-                            Connection.ExeNonQuery(userConvCmd); // For selected user
+                            Connection.ExeNonQuery(userConvCmd); 
                         }
                     }
 
-                    // Return the created ConversationID
                     return conversationID;
                 }
                 catch (Exception ex)
                 {
                     Console.WriteLine($"Error creating conversation: {ex.Message}");
-                    return -1;  // Return -1 if an error occurs
+                    return -1;
                 }
             }
         }
@@ -229,35 +227,31 @@ namespace BAL
                   SELECT MessageContent, SenderID
                   FROM Message
                   WHERE ConversationID = @ConversationID
-                  ORDER BY MessageID ASC"; // Order by SentAt to maintain message order
+                  ORDER BY MessageID ASC";
 
             try
             {
-                // Create and configure the SQL command
                 using (var cmd = new SqlCommand(query))
                 {
-                    // Add the parameter for conversation ID
                     cmd.Parameters.AddWithValue("@ConversationID", conversationID);
 
                     // Execute the query and retrieve the data
-                    var dt = Connection.ExeReader(cmd); // Assumes ExeReader returns a DataTable
+                    var dt = Connection.ExeReader(cmd);
 
-                    // Loop through each row and add the MessageContent and SenderID to the messages list
                     foreach (DataRow row in dt.Rows)
                     {
                         string messageContent = row["MessageContent"].ToString();
-                        int senderID = Convert.ToInt32(row["SenderID"]); // Convert to integer for SenderID
-                        messages.Add(new Tuple<string, int>(messageContent, senderID)); // Add each message and senderID
+                        int senderID = Convert.ToInt32(row["SenderID"]);
+                        messages.Add(new Tuple<string, int>(messageContent, senderID));
                     }
                 }
             }
             catch (Exception ex)
             {
-                // Log any errors that occur
+                
                 Console.WriteLine($"Error retrieving messages for conversation {conversationID}: {ex.Message}");
             }
 
-            // Return the list of messages and sender IDs
             return messages;
         }
 
@@ -275,7 +269,6 @@ namespace BAL
                 throw new ArgumentException("Message content cannot be empty.", nameof(message));
             }
 
-            // Define the SQL queries
             string updateConversationQuery = @"
                 UPDATE Conversation
                 SET LastMessageAt = @LastMessageAt
@@ -287,16 +280,14 @@ namespace BAL
 
             try
             {
-                // Create and execute the update command for the Conversation table
                 using (var updateCmd = new SqlCommand(updateConversationQuery))
                 {
                     updateCmd.Parameters.AddWithValue("@LastMessageAt", DateTime.Now);
                     updateCmd.Parameters.AddWithValue("@ConversationID", conversationID);
 
-                    Connection.ExeNonQuery(updateCmd); // Assumes ExeNonQuery executes non-query commands
+                    Connection.ExeNonQuery(updateCmd);
                 }
 
-                // Create and execute the insert command for the Message table
                 using (var insertCmd = new SqlCommand(insertMessageQuery))
                 {
                     insertCmd.Parameters.AddWithValue("@ConversationID", conversationID);

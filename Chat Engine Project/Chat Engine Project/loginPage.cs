@@ -27,12 +27,11 @@ namespace Chat_Engine_Project
                     password = txtPassword.Text
                 };
 
-                // Fetch logged-in user and all users in one operation asynchronously
+                // Fetch logged-in user and all users
                 var (loggedUser, allUsers) = await Task.Run(() => operations.CheckLoginAndFetchUsers(user));
 
-                if (loggedUser != null)
+                if (loggedUser.userID != 0)
                 {
-                    // Pass the logged user and all users to ConversationScreen
                     ConversationScreen conversationScreen = new ConversationScreen(loggedUser, allUsers);
                     conversationScreen.Show();
                 }
@@ -80,7 +79,6 @@ namespace Chat_Engine_Project
             }
             finally
             {
-                // Re-enable the button in case there's any delay in processing (rare for `Close()`)
                 btnExit.Enabled = true;
             }
         }
